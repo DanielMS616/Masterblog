@@ -2,6 +2,10 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
+
+    <!--
+    Makes the page responsive on smartphones and tablets.
+    -->
     <meta
         name="viewport"
         content="width=device-width, initial-scale=1.0"
@@ -9,6 +13,10 @@
 
     <title>My Flask Blog</title>
 
+    <!--
+    url_for("static", ...) creates the correct URL for files
+    inside the static folder.
+    -->
     <link
         rel="stylesheet"
         href="{{ url_for('static', filename='style.css') }}"
@@ -27,8 +35,8 @@
             </div>
 
             <!--
-            url_for("add") creates the URL that belongs to the
-            Flask function add().
+            url_for("add") creates the URL for the Flask function add().
+            Clicking this link opens the form for creating a new post.
             -->
             <a
                 class="button button-primary"
@@ -40,13 +48,19 @@
 
         <section class="posts">
             <!--
-            Jinja loops through the list named posts.
-            Flask passes this list to the template in the index route.
-            During each loop, post represents one blog-post dictionary.
+            Flask passes the blog-post list to this template under
+            the name "posts".
+
+            During every loop iteration, "post" represents one
+            dictionary from the JSON file.
             -->
             {% for post in posts %}
                 <article class="post">
                     <header class="post-header">
+                        <!--
+                        The values are read from the current
+                        blog-post dictionary.
+                        -->
                         <h2>{{ post["title"] }}</h2>
 
                         <p class="post-author">
@@ -60,8 +74,26 @@
 
                     <footer class="post-actions">
                         <!--
-                        post["id"] is inserted into the dynamic
-                        /delete/<post_id> route.
+                        The current post ID is inserted into the
+                        dynamic update route.
+
+                        For a post with ID 3, this creates /update/3.
+                        -->
+                        <a
+                            class="button button-edit"
+                            href="{{ url_for(
+                                'update',
+                                post_id=post['id']
+                            ) }}"
+                        >
+                            Edit
+                        </a>
+
+                        <!--
+                        The current post ID is inserted into the
+                        dynamic delete route.
+
+                        For a post with ID 3, this creates /delete/3.
                         -->
                         <a
                             class="button button-delete"
@@ -77,8 +109,8 @@
 
             {% else %}
                 <!--
-                The else block is displayed when the posts list
-                does not contain any blog posts.
+                Jinja executes this else block when the posts list
+                is empty and the for-loop has no elements to display.
                 -->
                 <div class="empty-message">
                     <h2>No blog posts yet</h2>

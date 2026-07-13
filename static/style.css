@@ -163,3 +163,12 @@ textarea:focus {
         text-align: center;
     }
 }
+
+.button-edit {
+    background-color: #DDEBFF;
+    color: #174A7E;
+}
+
+.button-edit:hover {
+    background-color: #BDD7F5;
+}

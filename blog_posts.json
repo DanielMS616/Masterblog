@@ -1,14 +1,8 @@
 [
     {
-        "id": 1,
-        "author": "John Doe",
-        "title": "First Post",
-        "content": "This is my first post."
-    },
-    {
         "id": 2,
-        "author": "Jane Doe",
-        "title": "Second Post",
+        "author": "Jane ",
+        "title": "Second Poscht",
         "content": "This is post."
     },
     {
@@ -28,5 +22,11 @@
         "author": "achi",
         "title": "liebe",
         "content": "PiPi"
+    },
+    {
+        "id": 6,
+        "author": "LO",
+        "title": "V3",
+        "content": "M3"
     }
 ]

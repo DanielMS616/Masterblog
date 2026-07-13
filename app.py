@@ -49,6 +49,19 @@ def get_next_id(blog_posts):
     return next_id
 
 
+def fetch_post_by_id(blog_posts, post_id):
+    """Return the blog post with the given ID or None."""
+
+    # Go through every post dictionary in the provided list.
+    for post in blog_posts:
+        # Return the complete dictionary when its ID matches.
+        if post["id"] == post_id:
+            return post
+
+    # None shows that no matching blog post was found.
+    return None
+
+
 @app.route("/")
 def index():
     """Display all blog posts on the home page."""
@@ -129,6 +142,44 @@ def delete(post_id):
 
     # Redirect the browser to the index page after deleting the post.
     return redirect(url_for("index"))
+
+
+@app.route("/update/<int:post_id>", methods=["GET", "POST"])
+def update(post_id):
+    """Display or process the form for updating a blog post."""
+
+    # Load the current list of blog posts from the JSON file.
+    blog_posts = load_blog_posts()
+
+    # Find the dictionary whose ID matches the ID from the URL.
+    post = fetch_post_by_id(blog_posts, post_id)
+
+    # Return a 404 response if the requested blog post does not exist.
+    if post is None:
+        return "Post not found", 404
+
+    # A POST request means that the update form was submitted.
+    if request.method == "POST":
+        # Read the updated values from the submitted HTML form.
+        author = request.form.get("author")
+        title = request.form.get("title")
+        content = request.form.get("content")
+
+        # Replace the old values in the existing post dictionary.
+        # The ID remains unchanged because it identifies this post.
+        post["author"] = author
+        post["title"] = title
+        post["content"] = content
+
+        # Save the complete list containing the updated dictionary.
+        save_blog_posts(blog_posts)
+
+        # Redirect the browser to the home page after saving.
+        return redirect(url_for("index"))
+
+    # A GET request displays the form and passes the current post data
+    # to update.html so the fields can be filled automatically.
+    return render_template("update.html", post=post)
 
 
 if __name__ == "__main__":

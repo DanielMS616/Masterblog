@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0"
+    >
+
+    <title>Update Blog Post</title>
+
+    <link
+        rel="stylesheet"
+        href="{{ url_for('static', filename='style.css') }}"
+    >
+</head>
+
+<body>
+    <main class="page-container">
+        <header class="page-header">
+            <div>
+                <h1>Update Blog Post</h1>
+
+                <p class="page-description">
+                    Edit the current author, title, or content.
+                </p>
+            </div>
+
+            <a
+                class="button"
+                href="{{ url_for('index') }}"
+            >
+                Back to All Posts
+            </a>
+        </header>
+
+        <!--
+        The form sends a POST request to the update route belonging
+        to the current blog post ID.
+        -->
+        <form
+            method="POST"
+            action="{{ url_for('update', post_id=post['id']) }}"
+        >
+            <div class="form-group">
+                <label for="author">Author:</label>
+
+                <!--
+                value displays the current author when the form opens.
+                -->
+                <input
+                    type="text"
+                    id="author"
+                    name="author"
+                    value="{{ post['author'] }}"
+                    required
+                >
+            </div>
+
+            <div class="form-group">
+                <label for="title">Title:</label>
+
+                <!--
+                The current title is inserted into the input field.
+                -->
+                <input
+                    type="text"
+                    id="title"
+                    name="title"
+                    value="{{ post['title'] }}"
+                    required
+                >
+            </div>
+
+            <div class="form-group">
+                <label for="content">Content:</label>
+
+                <!--
+                A textarea does not use a value attribute.
+                Its current value is written between its opening
+                and closing tags.
+                -->
+                <textarea
+                    id="content"
+                    name="content"
+                    rows="8"
+                    required
+                >{{ post["content"] }}</textarea>
+            </div>
+
+            <button
+                class="button button-primary"
+                type="submit"
+            >
+                Update Post
+            </button>
+        </form>
+    </main>
+</body>
+</html>
