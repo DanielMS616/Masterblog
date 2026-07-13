@@ -1,6 +1,6 @@
 import json
 
-from flask import Flask, render_template
+from flask import Flask, redirect, render_template, request, url_for
 
 
 # Create the Flask application object.
@@ -32,6 +32,23 @@ def save_blog_posts(blog_posts):
         json.dump(blog_posts, file, indent=4)
 
 
+def get_next_id(blog_posts):
+    """Return the next available ID for a new blog post."""
+
+    # Start with ID 1. This is also the correct ID when the list
+    # of blog posts is currently empty.
+    next_id = 1
+
+    # Check every existing blog post.
+    # If a post uses next_id or a larger number, move next_id
+    # to the number directly after that post's ID.
+    for post in blog_posts:
+        if post["id"] >= next_id:
+            next_id = post["id"] + 1
+
+    return next_id
+
+
 @app.route("/")
 def index():
     """Display all blog posts on the home page."""
@@ -44,5 +61,44 @@ def index():
     return render_template("index.html", posts=blog_posts)
 
 
+@app.route("/add", methods=["GET", "POST"])
+def add():
+    """Display the form or save a newly submitted blog post."""
+
+    # A POST request means that the user submitted the HTML form.
+    if request.method == "POST":
+        # request.form contains the values submitted by the form.
+        # The keys must match the name attributes in add.html.
+        author = request.form.get("author")
+        title = request.form.get("title")
+        content = request.form.get("content")
+
+        # Load all currently stored posts before adding a new one.
+        blog_posts = load_blog_posts()
+
+        # Create a new dictionary using the submitted form values.
+        # get_next_id() ensures that the new post receives a unique ID.
+        new_post = {
+            "id": get_next_id(blog_posts),
+            "author": author,
+            "title": title,
+            "content": content
+        }
+
+        # Add the new post to the Python list.
+        blog_posts.append(new_post)
+
+        # Save the complete updated list back to the JSON file.
+        save_blog_posts(blog_posts)
+
+        # Redirect the browser to the index route after saving.
+        # url_for("index") creates the URL belonging to index().
+        return redirect(url_for("index"))
+
+    # A GET request displays the form for creating a new post.
+    return render_template("add.html")
+
+
 if __name__ == "__main__":
+    # Start the Flask development server on port 4999.
     app.run(host="0.0.0.0", port=4999, debug=True)
