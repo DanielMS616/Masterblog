@@ -147,6 +147,22 @@
 
                     <footer class="post-actions">
                         <!--
+                        A like changes stored data, so the button sends a POST request
+                        instead of opening a normal GET link.
+                        -->
+                        <form
+                            class="like-form"
+                            method="POST"
+                            action="{{ url_for('like', post_id=post['id']) }}"
+                        >
+                            <button
+                                class="button button-like"
+                                type="submit"
+                            >
+                                ♥ Like ({{ post.get("likes", 0) }})
+                            </button>
+                        </form>
+                        <!--
                         Insert the current post ID into /update/<id>.
                         -->
                         <a

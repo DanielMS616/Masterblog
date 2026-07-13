@@ -13,6 +13,9 @@ BLOG_POSTS_FILE = "blog_posts.json"
 # Older posts may not have a category yet.
 DEFAULT_CATEGORY = "Uncategorized"
 
+# Posts created before the like feature may not contain this key.
+DEFAULT_LIKES = 0
+
 # Store the available categories in one place.
 # The same list is used by the index, add, and update templates.
 CATEGORIES = [
@@ -162,7 +165,8 @@ def add():
             "author": author,
             "title": title,
             "content": content,
-            "category": category
+            "category": category,
+            "likes": DEFAULT_LIKES
         }
 
         blog_posts.append(new_post)
@@ -192,6 +196,34 @@ def delete(post_id):
     blog_posts.remove(post_to_delete)
     save_blog_posts(blog_posts)
 
+    return redirect(url_for("index"))
+
+
+@app.route("/like/<int:post_id>", methods=["POST"])
+def like(post_id):
+    """Increase the like counter of the selected blog post."""
+
+    # Load the current list so the stored JSON data can be changed.
+    blog_posts = load_blog_posts()
+
+    # Find the post whose ID was included in the dynamic URL.
+    post = fetch_post_by_id(blog_posts, post_id)
+
+    # Return HTTP status code 404 when the requested post does not exist.
+    if post is None:
+        return "Post not found", 404
+
+    # Older posts may not have a "likes" key yet.
+    # get() returns 0 in that case.
+    current_likes = post.get("likes", DEFAULT_LIKES)
+
+    # Increase the stored number by one.
+    post["likes"] = current_likes + 1
+
+    # Save the complete list containing the changed post dictionary.
+    save_blog_posts(blog_posts)
+
+    # Return to the home page so the new counter becomes visible.
     return redirect(url_for("index"))
 
 

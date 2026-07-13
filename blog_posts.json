@@ -2,8 +2,10 @@
     {
         "id": 2,
         "author": "Jane ",
-        "title": "Second Poscht",
-        "content": "This is post."
+        "title": "Second Poscht.",
+        "content": "This is post.",
+        "likes": 3,
+        "category": "Uncategorized"
     },
     {
         "id": 3,
@@ -15,13 +17,15 @@
         "id": 4,
         "author": "test",
         "title": "me",
-        "content": "text"
+        "content": "text",
+        "likes": 1
     },
     {
         "id": 5,
         "author": "achi",
         "title": "liebe",
-        "content": "PiPi"
+        "content": "PiPi",
+        "likes": 1
     },
     {
         "id": 6,
@@ -42,13 +46,15 @@
         "author": "ich",
         "title": "flask problem: 404",
         "content": "Der HTTP-Statuscode 404 bedeutet, dass der Server die angeforderte Internetseite nicht finden kann. Dies geschieht h\u00e4ufig, wenn die URL gel\u00f6scht oder ge\u00e4ndert wurde oder ein Tippfehler in der Webadresse vorliegt.",
-        "category": "Flask"
+        "category": "Flask",
+        "likes": 1
     },
     {
         "id": 9,
         "author": "pythonuser",
         "title": "python",
         "content": "testtest",
-        "category": "Projects"
+        "category": "Projects",
+        "likes": 1
     }
 ]

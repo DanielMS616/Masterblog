@@ -243,3 +243,16 @@ textarea:focus {
         flex-direction: column;
     }
 }
+
+.like-form {
+    margin: 0;
+}
+
+.button-like {
+    background-color: #FCE4EC;
+    color: #9C1C48;
+}
+
+.button-like:hover {
+    background-color: #F8BBD0;
+}
