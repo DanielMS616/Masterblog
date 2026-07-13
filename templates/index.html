@@ -25,7 +25,7 @@
                 <h1>Welcome to My Flask Blog!</h1>
 
                 <p class="page-description">
-                    Read the latest posts or share a new story.
+                    Share what you're learning, building, or thinking about.
                 </p>
             </div>
 
@@ -126,133 +126,173 @@
             <!--
             During each loop iteration, post represents one dictionary
             loaded from blog_posts.json.
+
+            Flask also adds avatar_filename and author_initials
+            temporarily before passing the posts to this template.
             -->
             {% for post in posts %}
                 <article class="post">
-                    <header class="post-header">
-                        <div>
-                            <h2>{{ post["title"] }}</h2>
+                    <div class="post-card-layout">
+                        <!--
+                        The avatar is placed in its own column.
 
-                            <p class="post-author">
-                                Written by {{ post["author"] }}
+                        The initials remain behind the image and become
+                        visible if the image file cannot be loaded.
+                        -->
+                        <div class="author-avatar">
+                            <span class="avatar-fallback">
+                                {{ post["author_initials"] }}
+                            </span>
 
-                                <!--
-                                Older posts may not contain a creation date yet.
-                                get() displays a fallback instead of causing an error.
-                                -->
-                                <time
-                                    class="post-date"
-                                    datetime="{{ post.get('created_at', '') }}"
-                                >
-                                    · {{ post.get(
-                                        "created_at",
-                                        "Date unknown"
-                                    ) | replace("T", " ") }}
-                                </time>
-                            </p>
+                            <img
+                                src="{{ url_for(
+                                    'static',
+                                    filename='avatars/' ~ post['avatar_filename']
+                                ) }}"
+                                alt="Avatar of {{ post['author'] }}"
+                                loading="lazy"
+                                onerror="this.remove()"
+                            >
                         </div>
 
                         <!--
-                        get() prevents an error when an older post does
-                        not contain the category key.
+                        All textual post information is placed in the
+                        second column of the card.
                         -->
-                        <span class="category-badge">
-                            {{ post.get(
-                                "category",
-                                "Uncategorized"
-                            ) }}
-                        </span>
-                    </header>
+                        <div class="post-card-content">
+                            <header class="post-header">
+                                <div class="author-information">
+                                    <strong class="author-name">
+                                        {{ post["author"] }}
+                                    </strong>
 
-                    <!--
-                    Only display the first 220 characters on the
-                    overview page.
+                                    <!--
+                                    Older posts may not contain a creation
+                                    date. get() provides a safe fallback.
+                                    -->
+                                    <time
+                                        class="post-date"
+                                        datetime="{{ post.get('created_at', '') }}"
+                                    >
+                                        {{ post.get(
+                                            "created_at",
+                                            "Date unknown"
+                                        ) | replace("T", " ") }}
+                                    </time>
+                                </div>
 
-                    The complete text is displayed on post.html.
-                    -->
-                    <p class="post-content post-preview">
-                        {{ post["content"][:220] }}{% if post["content"]|length > 220 %}...{% endif %}
-                    </p>
+                                <!--
+                                get() prevents an error when an older post
+                                does not contain the category key.
+                                -->
+                                <span class="category-badge">
+                                    {{ post.get(
+                                        "category",
+                                        "Uncategorized"
+                                    ) }}
+                                </span>
+                            </header>
 
-                    <footer class="post-actions">
-                        <!--
-                        Insert the current post ID into the detail route.
-
-                        A post with ID 3 creates:
-                        /post/3
-                        -->
-                        <a
-                            class="button button-read"
-                            href="{{ url_for(
-                                'post_detail',
-                                post_id=post['id']
-                            ) }}"
-                        >
-                            Read More
-                        </a>
-
-                        <!--
-                        A like changes stored data, so this form sends
-                        a POST request instead of using a normal link.
-                        -->
-                        <form
-                            class="like-form"
-                            method="POST"
-                            action="{{ url_for(
-                                'like',
-                                post_id=post['id']
-                            ) }}"
-                        >
                             <!--
-                            Tell the like route to return to the
-                            overview page after saving the new value.
+                            The title also links to the complete detail page.
                             -->
-                            <input
-                                type="hidden"
-                                name="return_page"
-                                value="index"
-                            >
+                            <h2 class="post-title">
+                                <a
+                                    href="{{ url_for(
+                                        'post_detail',
+                                        post_id=post['id']
+                                    ) }}"
+                                >
+                                    {{ post["title"] }}
+                                </a>
+                            </h2>
 
-                            <button
-                                class="button button-like"
-                                type="submit"
-                            >
-                                ♥ Like ({{ post.get("likes", 0) }})
-                            </button>
-                        </form>
+                            <!--
+                            Only display the first 220 characters on the
+                            overview page.
 
-                        <!--
-                        Insert the current post ID into the update route.
+                            The complete text is displayed on post.html.
+                            -->
+                            <p class="post-content post-preview">
+                                {{- post["content"][:220] -}}
 
-                        A post with ID 3 creates:
-                        /update/3
-                        -->
-                        <a
-                            class="button button-edit"
-                            href="{{ url_for(
-                                'update',
-                                post_id=post['id']
-                            ) }}"
-                        >
-                            Edit
-                        </a>
+                                {%- if post["content"]|length > 220 -%}
+                                    ...
+                                {%- endif -%}
+                            </p>
+                            <footer class="post-actions">
+                                <!--
+                                Open the complete detail page for this post.
+                                -->
+                                <a
+                                    class="button button-read"
+                                    href="{{ url_for(
+                                        'post_detail',
+                                        post_id=post['id']
+                                    ) }}"
+                                >
+                                    Read More
+                                </a>
 
-                        <!--
-                        Insert the current post ID into the delete route.
+                                <!--
+                                A like changes stored data, so this form
+                                sends a POST request.
+                                -->
+                                <form
+                                    class="like-form"
+                                    method="POST"
+                                    action="{{ url_for(
+                                        'like',
+                                        post_id=post['id']
+                                    ) }}"
+                                >
+                                    <!--
+                                    Tell the like route to return to the
+                                    overview after saving the new value.
+                                    -->
+                                    <input
+                                        type="hidden"
+                                        name="return_page"
+                                        value="index"
+                                    >
 
-                        A post with ID 3 creates:
-                        /delete/3
-                        -->
-                        <a
-                            class="button button-delete"
-                            href="{{ url_for(
-                                'delete',
-                                post_id=post['id']
-                            ) }}"
-                        >
-                            Delete
-                        </a>
-                    </footer>
+                                    <button
+                                        class="button button-like"
+                                        type="submit"
+                                    >
+                                        ♥ {{ post.get("likes", 0) }}
+                                    </button>
+                                </form>
+
+                                <!--
+                                Open the prefilled update form.
+                                -->
+                                <a
+                                    class="button button-edit"
+                                    href="{{ url_for(
+                                        'update',
+                                        post_id=post['id']
+                                    ) }}"
+                                >
+                                    Edit
+                                </a>
+
+                                <!--
+                                Delete the post whose ID is inserted
+                                into the dynamic route.
+                                -->
+                                <a
+                                    class="button button-delete"
+                                    href="{{ url_for(
+                                        'delete',
+                                        post_id=post['id']
+                                    ) }}"
+                                >
+                                    Delete
+                                </a>
+                            </footer>
+                        </div>
+                    </div>
                 </article>
 
             {% else %}
@@ -262,9 +302,7 @@
                 -->
                 <div class="empty-message">
                     {% if search_query or selected_category %}
-                        <!--
-                        Filters are active, but no post matches them.
-                        -->
+                        <!-- Filters are active, but no post matches them. -->
                         <h2>No matching posts found</h2>
 
                         <p>
@@ -279,13 +317,11 @@
                         </a>
 
                     {% else %}
-                        <!--
-                        No filters are active and no blog posts exist.
-                        -->
+                        <!-- No filters are active and no posts exist. -->
                         <h2>No blog posts yet</h2>
 
                         <p>
-                            Create the first post for your blog.
+                            Create the first post for your community.
                         </p>
 
                         <a

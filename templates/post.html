@@ -33,39 +33,75 @@
         <!--
         Flask passes one complete blog-post dictionary to this template
         under the variable name "post".
+
+        The route also adds:
+        post["avatar_filename"]
+        post["author_initials"]
         -->
         <article class="post post-detail">
-            <header class="post-header">
-                <div>
-                    <!-- Read the title and author from the dictionary. -->
-                    <h1>{{ post["title"] }}</h1>
+            <header class="post-detail-header">
+                <!--
+                The author area contains the avatar, author name,
+                creation date, and category.
+                -->
+                <div class="detail-author">
+                    <!--
+                    The initials remain behind the image.
 
-                    <p class="post-author">
-                        Written by {{ post["author"] }}
+                    If the avatar file cannot be loaded, onerror removes
+                    the broken image and the initials stay visible.
+                    -->
+                    <div class="author-avatar author-avatar-large">
+                        <span class="avatar-fallback">
+                            {{ post["author_initials"] }}
+                        </span>
+
+                        <img
+                            src="{{ url_for(
+                                'static',
+                                filename='avatars/' ~ post['avatar_filename']
+                            ) }}"
+                            alt="Avatar of {{ post['author'] }}"
+                            onerror="this.remove()"
+                        >
+                    </div>
+
+                    <div class="author-information">
+                        <strong class="author-name">
+                            {{ post["author"] }}
+                        </strong>
 
                         <!--
-                        The datetime attribute contains the machine-readable ISO value.
+                        The datetime attribute contains the original
+                        machine-readable ISO value.
+
                         The visible text replaces the T with a space.
                         -->
                         <time
                             class="post-date"
                             datetime="{{ post.get('created_at', '') }}"
                         >
-                            · {{ post.get(
+                            {{ post.get(
                                 "created_at",
                                 "Date unknown"
                             ) | replace("T", " ") }}
                         </time>
-                    </p>
+                    </div>
+
+                    <!--
+                    Older posts without a category are displayed as
+                    Uncategorized instead of causing an error.
+                    -->
+                    <span class="category-badge">
+                        {{ post.get(
+                            "category",
+                            "Uncategorized"
+                        ) }}
+                    </span>
                 </div>
 
-                <!--
-                Older posts without a category are displayed as
-                Uncategorized instead of causing an error.
-                -->
-                <span class="category-badge">
-                    {{ post.get("category", "Uncategorized") }}
-                </span>
+                <!-- Display the complete title of the selected post. -->
+                <h1>{{ post["title"] }}</h1>
             </header>
 
             <!--
@@ -76,6 +112,11 @@
                 {{ post["content"] }}
             </div>
 
+            <!--
+            Display the current number of likes.
+
+            Jinja chooses the correct singular or plural word.
+            -->
             <div class="like-summary">
                 ♥ {{ post.get("likes", 0) }}
 
@@ -88,6 +129,9 @@
 
             <footer class="post-actions detail-actions">
                 <!--
+                A like changes stored data, so this form sends
+                a POST request.
+
                 The hidden field tells the like route to redirect
                 back to this detail page after saving.
                 -->
@@ -113,7 +157,7 @@
                     </button>
                 </form>
 
-                <!-- Open the prefilled update form. -->
+                <!-- Open the prefilled update form for this post. -->
                 <a
                     class="button button-edit"
                     href="{{ url_for(

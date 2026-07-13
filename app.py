@@ -1,3 +1,4 @@
+import hashlib
 import json
 from datetime import datetime
 
@@ -28,6 +29,68 @@ CATEGORIES = [
     "Personal",
     DEFAULT_CATEGORY
 ]
+
+# Store all locally available avatar filenames.
+AVATAR_FILES = [
+    "avatar-01.webp",
+    "avatar-02.webp",
+    "avatar-03.webp",
+    "avatar-04.webp",
+    "avatar-05.webp",
+    "avatar-06.webp",
+    "avatar-07.webp",
+    "avatar-08.webp"
+]
+
+
+def get_avatar_filename(author):
+    """Return a stable avatar filename for an author name."""
+
+    # Remove unnecessary spaces and ignore uppercase differences.
+    # casefold() also handles names containing characters such as ä or ß.
+    normalized_author = author.strip().casefold()
+
+    # Convert the normalized name into stable binary hash data.
+    author_hash = hashlib.sha256(
+        normalized_author.encode("utf-8")
+    ).digest()
+
+    # The first hash byte is a number between 0 and 255.
+    # The modulo operation converts it into a valid list index.
+    avatar_index = author_hash[0] % len(AVATAR_FILES)
+
+    return AVATAR_FILES[avatar_index]
+
+
+def get_author_initials(author):
+    """Return one or two initials for the given author name."""
+
+    # split() separates the name into its individual words.
+    name_parts = author.strip().split()
+
+    if not name_parts:
+        return "?"
+
+    # A single name uses up to its first two letters.
+    if len(name_parts) == 1:
+        return name_parts[0][:2].upper()
+
+    # For multiple names, use the first and last initial.
+    first_initial = name_parts[0][0]
+    last_initial = name_parts[-1][0]
+
+    return f"{first_initial}{last_initial}".upper()
+
+
+def prepare_post_for_display(post):
+    """Add temporary avatar data used by the HTML templates."""
+
+    author = post.get("author", "")
+
+    # These values are only added to the in-memory dictionary.
+    # They are not written to the JSON file.
+    post["avatar_filename"] = get_avatar_filename(author)
+    post["author_initials"] = get_author_initials(author)
 
 
 def load_blog_posts():
@@ -90,6 +153,10 @@ def index():
 
     # Load the latest posts whenever the home page is requested.
     blog_posts = load_blog_posts()
+
+    # Add the avatar filename and initials to every displayed post.
+    for post in blog_posts:
+        prepare_post_for_display(post)
 
     # Display newer posts before older posts.
     # Posts without a creation date receive an empty string and appear last.
@@ -170,6 +237,9 @@ def post_detail(post_id):
     # Return HTTP status code 404 if the post does not exist.
     if post is None:
         return "Post not found", 404
+
+    # Prepare the avatar filename and initials for post.html.
+    prepare_post_for_display(post)
 
     # Pass the selected post dictionary to post.html.
     return render_template(
