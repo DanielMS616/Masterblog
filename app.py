@@ -64,14 +64,49 @@ def fetch_post_by_id(blog_posts, post_id):
 
 @app.route("/")
 def index():
-    """Display all blog posts on the home page."""
+    """Display all posts or posts matching the search query."""
 
-    # Load the current data from the JSON file whenever the home page
-    # is requested. This ensures that the page shows the latest posts.
+    # Load the current posts directly from the JSON file.
     blog_posts = load_blog_posts()
 
-    # Pass the list to index.html under the template name "posts".
-    return render_template("index.html", posts=blog_posts)
+    # Read the value of the "search" parameter from the URL.
+    # If no search parameter exists, an empty string is returned.
+    # strip() removes unnecessary spaces before and after the text.
+    search_query = request.args.get("search", "").strip()
+
+    # Only filter the posts when the user entered a search term.
+    if search_query:
+        matching_posts = []
+
+        # Convert the search term to lowercase so the search does not
+        # depend on uppercase or lowercase letters.
+        search_text = search_query.lower()
+
+        # Check the author, title, and content of every blog post.
+        for post in blog_posts:
+            author = post["author"].lower()
+            title = post["title"].lower()
+            content = post["content"].lower()
+
+            # "in" also finds the search text as part of a longer word.
+            if (
+                search_text in author
+                or search_text in title
+                or search_text in content
+            ):
+                matching_posts.append(post)
+
+        # Replace the complete list with the matching posts.
+        # The original JSON data remains unchanged.
+        blog_posts = matching_posts
+
+    # Pass both the displayed posts and the current search text
+    # to the Jinja template.
+    return render_template(
+        "index.html",
+        posts=blog_posts,
+        search_query=search_query
+    )
 
 
 @app.route("/add", methods=["GET", "POST"])

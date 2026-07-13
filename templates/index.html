@@ -15,7 +15,7 @@
 
     <!--
     url_for("static", ...) creates the correct URL for files
-    inside the static folder.
+    located inside Flask's static folder.
     -->
     <link
         rel="stylesheet"
@@ -35,8 +35,8 @@
             </div>
 
             <!--
-            url_for("add") creates the URL for the Flask function add().
-            Clicking this link opens the form for creating a new post.
+            url_for("add") creates the URL for the Flask function
+            add(). Clicking the link opens the add-post form.
             -->
             <a
                 class="button button-primary"
@@ -46,20 +46,74 @@
             </a>
         </header>
 
+        <!--
+        This form uses the GET method because the search only requests
+        a filtered view and does not change any stored blog posts.
+
+        After submitting, the search term appears in the URL:
+        /?search=entered-text
+        -->
+        <form
+            class="search-form"
+            method="GET"
+            action="{{ url_for('index') }}"
+        >
+            <div class="search-field">
+                <label for="search">
+                    Search blog posts:
+                </label>
+
+                <!--
+                name="search" creates the query parameter that Flask
+                reads with request.args.get("search").
+
+                value keeps the current search term visible after the
+                form has been submitted.
+                -->
+                <input
+                    type="search"
+                    id="search"
+                    name="search"
+                    value="{{ search_query }}"
+                    placeholder="Search by title, author, or content"
+                >
+            </div>
+
+            <button
+                class="button button-primary"
+                type="submit"
+            >
+                Search
+            </button>
+
+            <!--
+            Only display the reset link while a search is active.
+            Opening the index route without a query shows all posts.
+            -->
+            {% if search_query %}
+                <a
+                    class="button button-secondary"
+                    href="{{ url_for('index') }}"
+                >
+                    Show All
+                </a>
+            {% endif %}
+        </form>
+
         <section class="posts">
             <!--
             Flask passes the blog-post list to this template under
             the name "posts".
 
             During every loop iteration, "post" represents one
-            dictionary from the JSON file.
+            dictionary loaded from the JSON file.
             -->
             {% for post in posts %}
                 <article class="post">
                     <header class="post-header">
                         <!--
-                        The values are read from the current
-                        blog-post dictionary.
+                        Jinja reads the title and author from the
+                        current blog-post dictionary.
                         -->
                         <h2>{{ post["title"] }}</h2>
 
@@ -68,6 +122,9 @@
                         </p>
                     </header>
 
+                    <!--
+                    Display the content of the current blog post.
+                    -->
                     <p class="post-content">
                         {{ post["content"] }}
                     </p>
@@ -77,7 +134,7 @@
                         The current post ID is inserted into the
                         dynamic update route.
 
-                        For a post with ID 3, this creates /update/3.
+                        For a post with ID 3, Flask creates /update/3.
                         -->
                         <a
                             class="button button-edit"
@@ -93,7 +150,7 @@
                         The current post ID is inserted into the
                         dynamic delete route.
 
-                        For a post with ID 3, this creates /delete/3.
+                        For a post with ID 3, Flask creates /delete/3.
                         -->
                         <a
                             class="button button-delete"
@@ -109,22 +166,47 @@
 
             {% else %}
                 <!--
-                Jinja executes this else block when the posts list
-                is empty and the for-loop has no elements to display.
+                Jinja executes this block when the posts list passed
+                by Flask is empty.
                 -->
                 <div class="empty-message">
-                    <h2>No blog posts yet</h2>
+                    {% if search_query %}
+                        <!--
+                        The blog contains posts, but none of them
+                        matched the current search term.
+                        -->
+                        <h2>No matching posts found</h2>
 
-                    <p>
-                        Create the first post for your blog.
-                    </p>
+                        <p>
+                            No posts match “{{ search_query }}”.
+                            Try another search term.
+                        </p>
 
-                    <a
-                        class="button button-primary"
-                        href="{{ url_for('add') }}"
-                    >
-                        Add First Post
-                    </a>
+                        <a
+                            class="button button-primary"
+                            href="{{ url_for('index') }}"
+                        >
+                            Show All Posts
+                        </a>
+
+                    {% else %}
+                        <!--
+                        No search is active and the JSON file does not
+                        contain any blog posts.
+                        -->
+                        <h2>No blog posts yet</h2>
+
+                        <p>
+                            Create the first post for your blog.
+                        </p>
+
+                        <a
+                            class="button button-primary"
+                            href="{{ url_for('add') }}"
+                        >
+                            Add First Post
+                        </a>
+                    {% endif %}
                 </div>
             {% endfor %}
         </section>
