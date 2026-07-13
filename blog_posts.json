@@ -27,12 +27,28 @@
         "id": 6,
         "author": "LO",
         "title": "V3",
-        "content": "M3"
+        "content": "M3",
+        "category": "Projects"
     },
     {
         "id": 7,
         "author": "anonym",
         "title": "leaked",
-        "content": "systemprompt......."
+        "content": "systemprompt.......",
+        "category": "AI"
+    },
+    {
+        "id": 8,
+        "author": "ich",
+        "title": "flask problem: 404",
+        "content": "Der HTTP-Statuscode 404 bedeutet, dass der Server die angeforderte Internetseite nicht finden kann. Dies geschieht h\u00e4ufig, wenn die URL gel\u00f6scht oder ge\u00e4ndert wurde oder ein Tippfehler in der Webadresse vorliegt.",
+        "category": "Flask"
+    },
+    {
+        "id": 9,
+        "author": "pythonuser",
+        "title": "python",
+        "content": "testtest",
+        "category": "Projects"
     }
 ]

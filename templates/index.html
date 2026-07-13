@@ -3,9 +3,7 @@
 <head>
     <meta charset="UTF-8">
 
-    <!--
-    Makes the page responsive on smartphones and tablets.
-    -->
+    <!-- Makes the page responsive on mobile devices. -->
     <meta
         name="viewport"
         content="width=device-width, initial-scale=1.0"
@@ -13,10 +11,7 @@
 
     <title>My Flask Blog</title>
 
-    <!--
-    url_for("static", ...) creates the correct URL for files
-    located inside Flask's static folder.
-    -->
+    <!-- Load the stylesheet from Flask's static folder. -->
     <link
         rel="stylesheet"
         href="{{ url_for('static', filename='style.css') }}"
@@ -34,10 +29,7 @@
                 </p>
             </div>
 
-            <!--
-            url_for("add") creates the URL for the Flask function
-            add(). Clicking the link opens the add-post form.
-            -->
+            <!-- Open the form for creating a new post. -->
             <a
                 class="button button-primary"
                 href="{{ url_for('add') }}"
@@ -47,94 +39,115 @@
         </header>
 
         <!--
-        This form uses the GET method because the search only requests
-        a filtered view and does not change any stored blog posts.
-
-        After submitting, the search term appears in the URL:
-        /?search=entered-text
+        GET is used because filtering only requests a different view.
+        The stored blog posts are not changed.
         -->
         <form
             class="search-form"
             method="GET"
             action="{{ url_for('index') }}"
         >
-            <div class="search-field">
+            <div class="filter-field search-field">
                 <label for="search">
                     Search blog posts:
                 </label>
 
                 <!--
-                name="search" creates the query parameter that Flask
-                reads with request.args.get("search").
-
-                value keeps the current search term visible after the
-                form has been submitted.
+                name="search" becomes the URL query parameter that
+                Flask reads with request.args.get("search").
                 -->
                 <input
                     type="search"
                     id="search"
                     name="search"
                     value="{{ search_query }}"
-                    placeholder="Search by title, author, or content"
+                    placeholder="Title, author, content, or category"
                 >
+            </div>
+
+            <div class="filter-field category-field">
+                <label for="category">
+                    Category:
+                </label>
+
+                <!--
+                The options are created from the CATEGORIES list
+                passed to this template by Flask.
+                -->
+                <select
+                    id="category"
+                    name="category"
+                >
+                    <option value="">
+                        All Categories
+                    </option>
+
+                    {% for category in categories %}
+                        <option
+                            value="{{ category }}"
+                            {% if category == selected_category %}
+                                selected
+                            {% endif %}
+                        >
+                            {{ category }}
+                        </option>
+                    {% endfor %}
+                </select>
             </div>
 
             <button
                 class="button button-primary"
                 type="submit"
             >
-                Search
+                Apply Filters
             </button>
 
-            <!--
-            Only display the reset link while a search is active.
-            Opening the index route without a query shows all posts.
-            -->
-            {% if search_query %}
+            <!-- Only display the reset link while a filter is active. -->
+            {% if search_query or selected_category %}
                 <a
                     class="button button-secondary"
                     href="{{ url_for('index') }}"
                 >
-                    Show All
+                    Reset
                 </a>
             {% endif %}
         </form>
 
         <section class="posts">
             <!--
-            Flask passes the blog-post list to this template under
-            the name "posts".
-
-            During every loop iteration, "post" represents one
-            dictionary loaded from the JSON file.
+            During each loop, post represents one dictionary loaded
+            from blog_posts.json.
             -->
             {% for post in posts %}
                 <article class="post">
                     <header class="post-header">
-                        <!--
-                        Jinja reads the title and author from the
-                        current blog-post dictionary.
-                        -->
-                        <h2>{{ post["title"] }}</h2>
+                        <div>
+                            <h2>{{ post["title"] }}</h2>
 
-                        <p class="post-author">
-                            Written by {{ post["author"] }}
-                        </p>
+                            <p class="post-author">
+                                Written by {{ post["author"] }}
+                            </p>
+                        </div>
+
+                        <!--
+                        get() displays Uncategorized when an older post
+                        does not contain the category key.
+                        -->
+                        <span class="category-badge">
+                            {{ post.get(
+                                "category",
+                                "Uncategorized"
+                            ) }}
+                        </span>
                     </header>
 
-                    <!--
-                    Display the content of the current blog post.
-                    -->
                     <p class="post-content">
                         {{ post["content"] }}
                     </p>
 
                     <footer class="post-actions">
                         <!--
-                        The current post ID is inserted into the
-                        dynamic update route.
-
-                        For a post with ID 3, Flask creates /update/3.
+                        Insert the current post ID into /update/<id>.
                         -->
                         <a
                             class="button button-edit"
@@ -147,10 +160,7 @@
                         </a>
 
                         <!--
-                        The current post ID is inserted into the
-                        dynamic delete route.
-
-                        For a post with ID 3, Flask creates /delete/3.
+                        Insert the current post ID into /delete/<id>.
                         -->
                         <a
                             class="button button-delete"
@@ -165,21 +175,13 @@
                 </article>
 
             {% else %}
-                <!--
-                Jinja executes this block when the posts list passed
-                by Flask is empty.
-                -->
+                <!-- This block runs when Flask passes an empty list. -->
                 <div class="empty-message">
-                    {% if search_query %}
-                        <!--
-                        The blog contains posts, but none of them
-                        matched the current search term.
-                        -->
+                    {% if search_query or selected_category %}
                         <h2>No matching posts found</h2>
 
                         <p>
-                            No posts match “{{ search_query }}”.
-                            Try another search term.
+                            No posts match the selected filters.
                         </p>
 
                         <a
@@ -190,10 +192,6 @@
                         </a>
 
                     {% else %}
-                        <!--
-                        No search is active and the JSON file does not
-                        contain any blog posts.
-                        -->
                         <h2>No blog posts yet</h2>
 
                         <p>

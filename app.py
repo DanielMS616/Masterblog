@@ -10,12 +10,27 @@ app = Flask(__name__)
 # Store the filename in one place so all functions use the same file.
 BLOG_POSTS_FILE = "blog_posts.json"
 
+# Older posts may not have a category yet.
+DEFAULT_CATEGORY = "Uncategorized"
+
+# Store the available categories in one place.
+# The same list is used by the index, add, and update templates.
+CATEGORIES = [
+    "Python",
+    "Flask",
+    "AI",
+    "Automation",
+    "Projects",
+    "Personal",
+    DEFAULT_CATEGORY
+]
+
 
 def load_blog_posts():
     """Load and return all blog posts from the JSON file."""
 
-    # Open the JSON file in read mode.
-    # json.load() converts the JSON data into Python objects.
+    # json.load() converts the JSON array into a Python list
+    # containing one dictionary for each blog post.
     with open(BLOG_POSTS_FILE, "r", encoding="utf-8") as file:
         blog_posts = json.load(file)
 
@@ -25,9 +40,8 @@ def load_blog_posts():
 def save_blog_posts(blog_posts):
     """Save the complete list of blog posts to the JSON file."""
 
-    # Open the JSON file in write mode.
-    # json.dump() converts the Python list into JSON and writes it
-    # into the file. indent=4 keeps the file readable for humans.
+    # json.dump() converts the Python list back into JSON.
+    # indent=4 keeps the file readable for humans.
     with open(BLOG_POSTS_FILE, "w", encoding="utf-8") as file:
         json.dump(blog_posts, file, indent=4)
 
@@ -35,13 +49,10 @@ def save_blog_posts(blog_posts):
 def get_next_id(blog_posts):
     """Return the next available ID for a new blog post."""
 
-    # Start with ID 1. This is also the correct ID when the list
-    # of blog posts is currently empty.
+    # Start with 1 so the first post receives ID 1.
     next_id = 1
 
-    # Check every existing blog post.
-    # If a post uses next_id or a larger number, move next_id
-    # to the number directly after that post's ID.
+    # Move next_id behind the largest ID found in the list.
     for post in blog_posts:
         if post["id"] >= next_id:
             next_id = post["id"] + 1
@@ -52,60 +63,78 @@ def get_next_id(blog_posts):
 def fetch_post_by_id(blog_posts, post_id):
     """Return the blog post with the given ID or None."""
 
-    # Go through every post dictionary in the provided list.
+    # Search every post dictionary for the requested ID.
     for post in blog_posts:
-        # Return the complete dictionary when its ID matches.
         if post["id"] == post_id:
             return post
 
-    # None shows that no matching blog post was found.
+    # None shows that no matching post was found.
     return None
 
 
 @app.route("/")
 def index():
-    """Display all posts or posts matching the search query."""
+    """Display posts matching the search and category filters."""
 
-    # Load the current posts directly from the JSON file.
+    # Load the latest posts whenever the home page is requested.
     blog_posts = load_blog_posts()
 
-    # Read the value of the "search" parameter from the URL.
-    # If no search parameter exists, an empty string is returned.
-    # strip() removes unnecessary spaces before and after the text.
+    # Read the optional filters from the URL query string.
     search_query = request.args.get("search", "").strip()
+    selected_category = request.args.get("category", "").strip()
 
-    # Only filter the posts when the user entered a search term.
+    # Filter by author, title, content, or category.
     if search_query:
         matching_posts = []
-
-        # Convert the search term to lowercase so the search does not
-        # depend on uppercase or lowercase letters.
         search_text = search_query.lower()
 
-        # Check the author, title, and content of every blog post.
         for post in blog_posts:
             author = post["author"].lower()
             title = post["title"].lower()
             content = post["content"].lower()
 
-            # "in" also finds the search text as part of a longer word.
+            # get() returns the fallback category when an older post
+            # does not yet contain the "category" key.
+            category = post.get(
+                "category",
+                DEFAULT_CATEGORY
+            ).lower()
+
             if (
                 search_text in author
                 or search_text in title
                 or search_text in content
+                or search_text in category
             ):
                 matching_posts.append(post)
 
-        # Replace the complete list with the matching posts.
-        # The original JSON data remains unchanged.
+        # Only the matching posts are displayed.
+        # The JSON file itself is not changed.
         blog_posts = matching_posts
 
-    # Pass both the displayed posts and the current search text
-    # to the Jinja template.
+    # Apply the category filter after the text search.
+    if selected_category:
+        category_posts = []
+
+        for post in blog_posts:
+            post_category = post.get(
+                "category",
+                DEFAULT_CATEGORY
+            )
+
+            if post_category == selected_category:
+                category_posts.append(post)
+
+        blog_posts = category_posts
+
+    # Pass the posts, filter values, and available categories
+    # to the index template.
     return render_template(
         "index.html",
         posts=blog_posts,
-        search_query=search_query
+        search_query=search_query,
+        selected_category=selected_category,
+        categories=CATEGORIES
     )
 
 
@@ -113,69 +142,56 @@ def index():
 def add():
     """Display the form or save a newly submitted blog post."""
 
-    # A POST request means that the user submitted the HTML form.
+    # A POST request means that the add form was submitted.
     if request.method == "POST":
-        # request.form contains the values submitted by the form.
-        # The keys must match the name attributes in add.html.
+        # These keys match the name attributes in add.html.
         author = request.form.get("author")
         title = request.form.get("title")
         content = request.form.get("content")
+        category = (
+            request.form.get("category")
+            or DEFAULT_CATEGORY
+        )
 
-        # Load all currently stored posts before adding a new one.
+        # Load the current posts before adding a new one.
         blog_posts = load_blog_posts()
 
-        # Create a new dictionary using the submitted form values.
-        # get_next_id() ensures that the new post receives a unique ID.
+        # Create one new post dictionary.
         new_post = {
             "id": get_next_id(blog_posts),
             "author": author,
             "title": title,
-            "content": content
+            "content": content,
+            "category": category
         }
 
-        # Add the new post to the Python list.
         blog_posts.append(new_post)
-
-        # Save the complete updated list back to the JSON file.
         save_blog_posts(blog_posts)
 
-        # Redirect the browser to the index route after saving.
-        # url_for("index") creates the URL belonging to index().
         return redirect(url_for("index"))
 
-    # A GET request displays the form for creating a new post.
-    return render_template("add.html")
+    # A GET request displays the empty form.
+    return render_template(
+        "add.html",
+        categories=CATEGORIES
+    )
 
 
 @app.route("/delete/<int:post_id>")
 def delete(post_id):
     """Delete the blog post with the given ID."""
 
-    # Load the current blog posts directly from the JSON file.
     blog_posts = load_blog_posts()
+    post_to_delete = fetch_post_by_id(blog_posts, post_id)
 
-    # Start with no selected post. If a matching ID is found,
-    # this variable will contain the corresponding dictionary.
-    post_to_delete = None
-
-    # Check every blog-post dictionary until the requested ID is found.
-    for post in blog_posts:
-        if post["id"] == post_id:
-            post_to_delete = post
-            break
-
-    # Return an HTTP 404 response if no post has the requested ID.
+    # Return HTTP status code 404 when the post does not exist.
     if post_to_delete is None:
         return "Post not found", 404
 
-    # Remove the complete post dictionary from the Python list.
+    # Remove the complete dictionary and save the changed list.
     blog_posts.remove(post_to_delete)
-
-    # Save the changed list back to the JSON file so the deletion
-    # remains permanent after the application restarts.
     save_blog_posts(blog_posts)
 
-    # Redirect the browser to the index page after deleting the post.
     return redirect(url_for("index"))
 
 
@@ -183,38 +199,43 @@ def delete(post_id):
 def update(post_id):
     """Display or process the form for updating a blog post."""
 
-    # Load the current list of blog posts from the JSON file.
     blog_posts = load_blog_posts()
-
-    # Find the dictionary whose ID matches the ID from the URL.
     post = fetch_post_by_id(blog_posts, post_id)
 
-    # Return a 404 response if the requested blog post does not exist.
     if post is None:
         return "Post not found", 404
 
+    # Add a fallback category for older JSON entries.
+    if "category" not in post:
+        post["category"] = DEFAULT_CATEGORY
+
     # A POST request means that the update form was submitted.
     if request.method == "POST":
-        # Read the updated values from the submitted HTML form.
         author = request.form.get("author")
         title = request.form.get("title")
         content = request.form.get("content")
+        category = (
+            request.form.get("category")
+            or DEFAULT_CATEGORY
+        )
 
-        # Replace the old values in the existing post dictionary.
-        # The ID remains unchanged because it identifies this post.
+        # Update the existing dictionary.
+        # The ID remains unchanged.
         post["author"] = author
         post["title"] = title
         post["content"] = content
+        post["category"] = category
 
-        # Save the complete list containing the updated dictionary.
         save_blog_posts(blog_posts)
 
-        # Redirect the browser to the home page after saving.
         return redirect(url_for("index"))
 
-    # A GET request displays the form and passes the current post data
-    # to update.html so the fields can be filled automatically.
-    return render_template("update.html", post=post)
+    # A GET request displays the current values in the form.
+    return render_template(
+        "update.html",
+        post=post,
+        categories=CATEGORIES
+    )
 
 
 if __name__ == "__main__":
