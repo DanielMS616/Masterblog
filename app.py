@@ -99,6 +99,38 @@ def add():
     return render_template("add.html")
 
 
+@app.route("/delete/<int:post_id>")
+def delete(post_id):
+    """Delete the blog post with the given ID."""
+
+    # Load the current blog posts directly from the JSON file.
+    blog_posts = load_blog_posts()
+
+    # Start with no selected post. If a matching ID is found,
+    # this variable will contain the corresponding dictionary.
+    post_to_delete = None
+
+    # Check every blog-post dictionary until the requested ID is found.
+    for post in blog_posts:
+        if post["id"] == post_id:
+            post_to_delete = post
+            break
+
+    # Return an HTTP 404 response if no post has the requested ID.
+    if post_to_delete is None:
+        return "Post not found", 404
+
+    # Remove the complete post dictionary from the Python list.
+    blog_posts.remove(post_to_delete)
+
+    # Save the changed list back to the JSON file so the deletion
+    # remains permanent after the application restarts.
+    save_blog_posts(blog_posts)
+
+    # Redirect the browser to the index page after deleting the post.
+    return redirect(url_for("index"))
+
+
 if __name__ == "__main__":
     # Start the Flask development server on port 4999.
     app.run(host="0.0.0.0", port=4999, debug=True)

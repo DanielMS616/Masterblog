@@ -12,9 +12,21 @@
         "content": "This is post."
     },
     {
-    "id": 3,
-    "author": "Daniel",
-    "title": "Learning Flask",
-    "content": "Today I created my first JSON-backed Flask blog."
+        "id": 3,
+        "author": "Daniel",
+        "title": "Learning Flask",
+        "content": "Today I created my first JSON-backed Flask blog."
+    },
+    {
+        "id": 4,
+        "author": "test",
+        "title": "me",
+        "content": "text"
+    },
+    {
+        "id": 5,
+        "author": "achi",
+        "title": "liebe",
+        "content": "PiPi"
     }
 ]

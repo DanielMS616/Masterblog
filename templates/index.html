@@ -6,6 +6,7 @@
         name="viewport"
         content="width=device-width, initial-scale=1.0"
     >
+
     <title>My Flask Blog</title>
 
     <link
@@ -13,24 +14,88 @@
         href="{{ url_for('static', filename='style.css') }}"
     >
 </head>
+
 <body>
-    <h1>Welcome to My Flask Blog!</h1>
+    <main class="page-container">
+        <header class="page-header">
+            <div>
+                <h1>Welcome to My Flask Blog!</h1>
 
-    <!--
-    Jinja loops through the list named posts.
-    Flask passes this list to the template in the index route.
-    During each loop, post represents one blog-post dictionary.
-    -->
-    {% for post in posts %}
-        <div class="post">
-            <h2>{{ post["title"] }}</h2>
+                <p class="page-description">
+                    Read the latest posts or share a new story.
+                </p>
+            </div>
 
-            <p>
-                <em>Written by {{ post["author"] }}</em>
-            </p>
+            <!--
+            url_for("add") creates the URL that belongs to the
+            Flask function add().
+            -->
+            <a
+                class="button button-primary"
+                href="{{ url_for('add') }}"
+            >
+                Add New Post
+            </a>
+        </header>
 
-            <p>{{ post["content"] }}</p>
-        </div>
-    {% endfor %}
+        <section class="posts">
+            <!--
+            Jinja loops through the list named posts.
+            Flask passes this list to the template in the index route.
+            During each loop, post represents one blog-post dictionary.
+            -->
+            {% for post in posts %}
+                <article class="post">
+                    <header class="post-header">
+                        <h2>{{ post["title"] }}</h2>
+
+                        <p class="post-author">
+                            Written by {{ post["author"] }}
+                        </p>
+                    </header>
+
+                    <p class="post-content">
+                        {{ post["content"] }}
+                    </p>
+
+                    <footer class="post-actions">
+                        <!--
+                        post["id"] is inserted into the dynamic
+                        /delete/<post_id> route.
+                        -->
+                        <a
+                            class="button button-delete"
+                            href="{{ url_for(
+                                'delete',
+                                post_id=post['id']
+                            ) }}"
+                        >
+                            Delete
+                        </a>
+                    </footer>
+                </article>
+
+            {% else %}
+                <!--
+                The else block is displayed when the posts list
+                does not contain any blog posts.
+                -->
+                <div class="empty-message">
+                    <h2>No blog posts yet</h2>
+
+                    <p>
+                        Create the first post for your blog.
+                    </p>
+
+                    <a
+                        class="button button-primary"
+                        href="{{ url_for('add') }}"
+                    >
+                        Add First Post
+                    </a>
+                </div>
+            {% endfor %}
+        </section>
+    </main>
 </body>
 </html>

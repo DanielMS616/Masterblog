@@ -1,27 +1,165 @@
+* {
+    box-sizing: border-box;
+}
+
 body {
+    margin: 0;
+    padding: 40px 20px;
     font-family: Arial, sans-serif;
     background-color: #F5F5F5;
-    padding: 20px;
     color: #333;
 }
 
+.page-container {
+    max-width: 900px;
+    margin: 0 auto;
+}
+
+.page-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 30px;
+    margin-bottom: 30px;
+}
+
 h1 {
-    text-align: center;
+    margin: 0;
     color: #4F4F4F;
 }
 
+.page-description {
+    margin: 8px 0 0;
+    color: #666;
+}
+
+.posts {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
+
 .post {
+    padding: 24px;
     background-color: #FFF;
     border: 1px solid #DDD;
-    padding: 20px;
-    margin-bottom: 20px;
     border-radius: 8px;
 }
 
-.post h2 {
-    margin-top: 0;
+.post-header {
+    padding-bottom: 14px;
+    border-bottom: 1px solid #EEE;
 }
 
-.post p {
-    margin: 10px 0;
+.post h2 {
+    margin: 0;
+    color: #333;
+}
+
+.post-author {
+    margin: 8px 0 0;
+    color: #777;
+    font-style: italic;
+}
+
+.post-content {
+    margin: 20px 0;
+    line-height: 1.6;
+    white-space: pre-wrap;
+}
+
+.post-actions {
+    display: flex;
+    justify-content: flex-end;
+    gap: 10px;
+}
+
+.button {
+    display: inline-block;
+    padding: 10px 16px;
+    border: none;
+    border-radius: 6px;
+    text-decoration: none;
+    font-size: 14px;
+    cursor: pointer;
+}
+
+.button-primary {
+    background-color: #4F4F4F;
+    color: #FFF;
+}
+
+.button-primary:hover {
+    background-color: #333;
+}
+
+.button-delete {
+    background-color: #F8D7DA;
+    color: #842029;
+}
+
+.button-delete:hover {
+    background-color: #F1AEB5;
+}
+
+.empty-message {
+    padding: 40px;
+    text-align: center;
+    background-color: #FFF;
+    border: 1px solid #DDD;
+    border-radius: 8px;
+}
+
+/* Form styles used by add.html and update.html */
+
+form {
+    max-width: 700px;
+    margin: 30px auto;
+    padding: 30px;
+    background-color: #FFF;
+    border: 1px solid #DDD;
+    border-radius: 8px;
+}
+
+.form-group {
+    margin-bottom: 20px;
+}
+
+label {
+    display: block;
+    margin-bottom: 8px;
+    font-weight: bold;
+}
+
+input,
+textarea {
+    width: 100%;
+    padding: 12px;
+    font-family: inherit;
+    font-size: 16px;
+    border: 1px solid #CCC;
+    border-radius: 6px;
+}
+
+textarea {
+    min-height: 180px;
+    resize: vertical;
+}
+
+input:focus,
+textarea:focus {
+    border-color: #666;
+    outline: none;
+}
+
+@media (max-width: 650px) {
+    .page-header {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+
+    .page-header .button {
+        width: 100%;
+        text-align: center;
+    }
 }
