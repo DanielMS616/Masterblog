@@ -11,7 +11,7 @@
 
     <title>My Flask Blog</title>
 
-    <!-- Load the stylesheet from Flask's static folder. -->
+    <!-- Load the shared stylesheet from Flask's static folder. -->
     <link
         rel="stylesheet"
         href="{{ url_for('static', filename='style.css') }}"
@@ -29,7 +29,7 @@
                 </p>
             </div>
 
-            <!-- Open the form for creating a new post. -->
+            <!-- Open the form for creating a new blog post. -->
             <a
                 class="button button-primary"
                 href="{{ url_for('add') }}"
@@ -39,8 +39,11 @@
         </header>
 
         <!--
-        GET is used because filtering only requests a different view.
-        The stored blog posts are not changed.
+        The filter form uses GET because it only changes which posts
+        are displayed. It does not modify the stored JSON data.
+
+        Example URL:
+        /?search=flask&category=Python
         -->
         <form
             class="search-form"
@@ -53,8 +56,11 @@
                 </label>
 
                 <!--
-                name="search" becomes the URL query parameter that
-                Flask reads with request.args.get("search").
+                name="search" creates the query parameter that Flask
+                reads with request.args.get("search").
+
+                value keeps the current search text visible after
+                submitting the form.
                 -->
                 <input
                     type="search"
@@ -71,8 +77,8 @@
                 </label>
 
                 <!--
-                The options are created from the CATEGORIES list
-                passed to this template by Flask.
+                Flask passes the available categories to this template.
+                Jinja creates one option for every category.
                 -->
                 <select
                     id="category"
@@ -102,7 +108,10 @@
                 Apply Filters
             </button>
 
-            <!-- Only display the reset link while a filter is active. -->
+            <!--
+            Only show the reset button while at least one filter
+            is currently active.
+            -->
             {% if search_query or selected_category %}
                 <a
                     class="button button-secondary"
@@ -115,8 +124,8 @@
 
         <section class="posts">
             <!--
-            During each loop, post represents one dictionary loaded
-            from blog_posts.json.
+            During each loop iteration, post represents one dictionary
+            loaded from blog_posts.json.
             -->
             {% for post in posts %}
                 <article class="post">
@@ -130,8 +139,8 @@
                         </div>
 
                         <!--
-                        get() displays Uncategorized when an older post
-                        does not contain the category key.
+                        get() prevents an error when an older post does
+                        not contain the category key.
                         -->
                         <span class="category-badge">
                             {{ post.get(
@@ -141,20 +150,55 @@
                         </span>
                     </header>
 
-                    <p class="post-content">
-                        {{ post["content"] }}
+                    <!--
+                    Only display the first 220 characters on the
+                    overview page.
+
+                    The complete text is displayed on post.html.
+                    -->
+                    <p class="post-content post-preview">
+                        {{ post["content"][:220] }}{% if post["content"]|length > 220 %}...{% endif %}
                     </p>
 
                     <footer class="post-actions">
                         <!--
-                        A like changes stored data, so the button sends a POST request
-                        instead of opening a normal GET link.
+                        Insert the current post ID into the detail route.
+
+                        A post with ID 3 creates:
+                        /post/3
+                        -->
+                        <a
+                            class="button button-read"
+                            href="{{ url_for(
+                                'post_detail',
+                                post_id=post['id']
+                            ) }}"
+                        >
+                            Read More
+                        </a>
+
+                        <!--
+                        A like changes stored data, so this form sends
+                        a POST request instead of using a normal link.
                         -->
                         <form
                             class="like-form"
                             method="POST"
-                            action="{{ url_for('like', post_id=post['id']) }}"
+                            action="{{ url_for(
+                                'like',
+                                post_id=post['id']
+                            ) }}"
                         >
+                            <!--
+                            Tell the like route to return to the
+                            overview page after saving the new value.
+                            -->
+                            <input
+                                type="hidden"
+                                name="return_page"
+                                value="index"
+                            >
+
                             <button
                                 class="button button-like"
                                 type="submit"
@@ -162,8 +206,12 @@
                                 ♥ Like ({{ post.get("likes", 0) }})
                             </button>
                         </form>
+
                         <!--
-                        Insert the current post ID into /update/<id>.
+                        Insert the current post ID into the update route.
+
+                        A post with ID 3 creates:
+                        /update/3
                         -->
                         <a
                             class="button button-edit"
@@ -176,7 +224,10 @@
                         </a>
 
                         <!--
-                        Insert the current post ID into /delete/<id>.
+                        Insert the current post ID into the delete route.
+
+                        A post with ID 3 creates:
+                        /delete/3
                         -->
                         <a
                             class="button button-delete"
@@ -191,9 +242,15 @@
                 </article>
 
             {% else %}
-                <!-- This block runs when Flask passes an empty list. -->
+                <!--
+                Jinja executes this block when Flask passes an empty
+                posts list.
+                -->
                 <div class="empty-message">
                     {% if search_query or selected_category %}
+                        <!--
+                        Filters are active, but no post matches them.
+                        -->
                         <h2>No matching posts found</h2>
 
                         <p>
@@ -208,6 +265,9 @@
                         </a>
 
                     {% else %}
+                        <!--
+                        No filters are active and no blog posts exist.
+                        -->
                         <h2>No blog posts yet</h2>
 
                         <p>

@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+
+    <!-- Makes the page responsive on smartphones and tablets. -->
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0"
+    >
+
+    <title>{{ post["title"] }} | My Flask Blog</title>
+
+    <!-- Load the shared stylesheet from Flask's static folder. -->
+    <link
+        rel="stylesheet"
+        href="{{ url_for('static', filename='style.css') }}"
+    >
+</head>
+
+<body>
+    <main class="page-container">
+        <header class="detail-navigation">
+            <!-- Return to the overview containing all blog posts. -->
+            <a
+                class="button button-secondary"
+                href="{{ url_for('index') }}"
+            >
+                ← Back to All Posts
+            </a>
+        </header>
+
+        <!--
+        Flask passes one complete blog-post dictionary to this template
+        under the variable name "post".
+        -->
+        <article class="post post-detail">
+            <header class="post-header">
+                <div>
+                    <!-- Read the title and author from the dictionary. -->
+                    <h1>{{ post["title"] }}</h1>
+
+                    <p class="post-author">
+                        Written by {{ post["author"] }}
+                    </p>
+                </div>
+
+                <!--
+                Older posts without a category are displayed as
+                Uncategorized instead of causing an error.
+                -->
+                <span class="category-badge">
+                    {{ post.get("category", "Uncategorized") }}
+                </span>
+            </header>
+
+            <!--
+            Unlike the overview page, the detail page displays the
+            complete content without shortening it.
+            -->
+            <div class="post-content detail-content">
+                {{ post["content"] }}
+            </div>
+
+            <div class="like-summary">
+                ♥ {{ post.get("likes", 0) }}
+
+                {% if post.get("likes", 0) == 1 %}
+                    Like
+                {% else %}
+                    Likes
+                {% endif %}
+            </div>
+
+            <footer class="post-actions detail-actions">
+                <!--
+                The hidden field tells the like route to redirect
+                back to this detail page after saving.
+                -->
+                <form
+                    class="like-form"
+                    method="POST"
+                    action="{{ url_for(
+                        'like',
+                        post_id=post['id']
+                    ) }}"
+                >
+                    <input
+                        type="hidden"
+                        name="return_page"
+                        value="detail"
+                    >
+
+                    <button
+                        class="button button-like"
+                        type="submit"
+                    >
+                        ♥ Like This Post
+                    </button>
+                </form>
+
+                <!-- Open the prefilled update form. -->
+                <a
+                    class="button button-edit"
+                    href="{{ url_for(
+                        'update',
+                        post_id=post['id']
+                    ) }}"
+                >
+                    Edit Post
+                </a>
+
+                <!-- Delete the currently displayed post. -->
+                <a
+                    class="button button-delete"
+                    href="{{ url_for(
+                        'delete',
+                        post_id=post['id']
+                    ) }}"
+                >
+                    Delete Post
+                </a>
+            </footer>
+        </article>
+    </main>
+</body>
+</html>

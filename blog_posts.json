@@ -25,7 +25,8 @@
         "author": "achi",
         "title": "liebe",
         "content": "PiPi",
-        "likes": 1
+        "likes": 1,
+        "category": "Projects"
     },
     {
         "id": 6,
@@ -45,9 +46,9 @@
         "id": 8,
         "author": "ich",
         "title": "flask problem: 404",
-        "content": "Der HTTP-Statuscode 404 bedeutet, dass der Server die angeforderte Internetseite nicht finden kann. Dies geschieht h\u00e4ufig, wenn die URL gel\u00f6scht oder ge\u00e4ndert wurde oder ein Tippfehler in der Webadresse vorliegt.",
+        "content": "Der HTTP-Statuscode 404 bedeutet, dass der Server die angeforderte Internetseite nicht finden kann. Dies geschieht h\u00e4ufig, wenn die URL gel\u00f6scht oder ge\u00e4ndert wurde oder ein Tippfehler in der Webadresse vorliegt.\r\nkec",
         "category": "Flask",
-        "likes": 1
+        "likes": 3
     },
     {
         "id": 9,

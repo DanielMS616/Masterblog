@@ -221,6 +221,19 @@ textarea:focus {
         padding: 25px 15px;
     }
 
+        .post-actions {
+        flex-wrap: wrap;
+        justify-content: flex-start;
+    }
+
+    .post-actions .button {
+        width: 100%;
+    }
+
+    .like-form {
+        width: 100%;
+    }
+
     .page-header {
         flex-direction: column;
         align-items: stretch;
@@ -255,4 +268,48 @@ textarea:focus {
 
 .button-like:hover {
     background-color: #F8BBD0;
+}
+
+/* Blog post detail page */
+
+.detail-navigation {
+    margin-bottom: 20px;
+}
+
+.post-detail {
+    padding: 32px;
+}
+
+.post-detail h1 {
+    color: #333;
+}
+
+.detail-content {
+    min-height: 180px;
+    font-size: 17px;
+    line-height: 1.8;
+}
+
+.like-summary {
+    margin: 25px 0;
+    color: #9C1C48;
+    font-weight: bold;
+}
+
+.detail-actions {
+    padding-top: 20px;
+    border-top: 1px solid #EEE;
+}
+
+.button-read {
+    background-color: #E8F5E9;
+    color: #256029;
+}
+
+.button-read:hover {
+    background-color: #C8E6C9;
+}
+
+.post-preview {
+    overflow-wrap: anywhere;
 }

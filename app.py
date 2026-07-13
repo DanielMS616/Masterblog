@@ -141,6 +141,27 @@ def index():
     )
 
 
+@app.route("/post/<int:post_id>")
+def post_detail(post_id):
+    """Display the complete details of one blog post."""
+
+    # Load all posts from the JSON file.
+    blog_posts = load_blog_posts()
+
+    # Find the post whose ID was included in the URL.
+    post = fetch_post_by_id(blog_posts, post_id)
+
+    # Return HTTP status code 404 if the post does not exist.
+    if post is None:
+        return "Post not found", 404
+
+    # Pass the selected post dictionary to post.html.
+    return render_template(
+        "post.html",
+        post=post
+    )
+
+
 @app.route("/add", methods=["GET", "POST"])
 def add():
     """Display the form or save a newly submitted blog post."""
@@ -203,27 +224,38 @@ def delete(post_id):
 def like(post_id):
     """Increase the like counter of the selected blog post."""
 
-    # Load the current list so the stored JSON data can be changed.
+    # Load the current posts so the selected dictionary can be changed.
     blog_posts = load_blog_posts()
 
-    # Find the post whose ID was included in the dynamic URL.
+    # Find the post whose ID was included in the URL.
     post = fetch_post_by_id(blog_posts, post_id)
 
-    # Return HTTP status code 404 when the requested post does not exist.
+    # Return HTTP status code 404 when the post does not exist.
     if post is None:
         return "Post not found", 404
 
-    # Older posts may not have a "likes" key yet.
-    # get() returns 0 in that case.
+    # Older posts may not contain the likes key yet.
     current_likes = post.get("likes", DEFAULT_LIKES)
 
-    # Increase the stored number by one.
+    # Increase the stored like counter by one.
     post["likes"] = current_likes + 1
 
-    # Save the complete list containing the changed post dictionary.
+    # Save the complete list containing the changed dictionary.
     save_blog_posts(blog_posts)
 
-    # Return to the home page so the new counter becomes visible.
+    # The hidden form field tells Flask where the user clicked Like.
+    return_page = request.form.get("return_page", "index")
+
+    # Return to the detail page when the Like button was clicked there.
+    if return_page == "detail":
+        return redirect(
+            url_for(
+                "post_detail",
+                post_id=post_id
+            )
+        )
+
+    # Otherwise return to the main blog page.
     return redirect(url_for("index"))
 
 
