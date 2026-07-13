@@ -117,19 +117,19 @@
     },
     {
         "id": 17,
-        "author": "test",
-        "title": "python <3",
-        "content": "like riding bicycle",
-        "category": "Python",
+        "author": "Maya Chen",
+        "title": "Building My First Local AI Assistant",
+        "content": "This week, I connected a local language model to a small document search system. It can now answer questions based on my own files without sending the documents to an external service. The next step is improving the source references and testing how reliably it handles unclear questions.",
+        "category": "AI",
         "likes": 0,
         "created_at": "2026-07-14T00:47"
     },
     {
         "id": 18,
-        "author": "Sailormoon",
-        "title": "sailing between front & back",
-        "content": "print('He is called \"Johnny\"')",
-        "category": "AI",
+        "author": "Leo Martinez",
+        "title": "What I Learned From Redesigning My Flask Blog",
+        "content": "I started with a simple list of blog posts and slowly turned it into a small community platform. Search, categories, likes, detail pages, timestamps, and automatic author avatars taught me how the backend, templates, and CSS work together. Small improvements can completely change how a project feels.",
+        "category": "Projects",
         "likes": 0,
         "created_at": "2026-07-14T00:52"
     }
