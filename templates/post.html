@@ -42,6 +42,20 @@
 
                     <p class="post-author">
                         Written by {{ post["author"] }}
+
+                        <!--
+                        The datetime attribute contains the machine-readable ISO value.
+                        The visible text replaces the T with a space.
+                        -->
+                        <time
+                            class="post-date"
+                            datetime="{{ post.get('created_at', '') }}"
+                        >
+                            · {{ post.get(
+                                "created_at",
+                                "Date unknown"
+                            ) | replace("T", " ") }}
+                        </time>
                     </p>
                 </div>
 

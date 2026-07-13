@@ -135,6 +135,20 @@
 
                             <p class="post-author">
                                 Written by {{ post["author"] }}
+
+                                <!--
+                                Older posts may not contain a creation date yet.
+                                get() displays a fallback instead of causing an error.
+                                -->
+                                <time
+                                    class="post-date"
+                                    datetime="{{ post.get('created_at', '') }}"
+                                >
+                                    · {{ post.get(
+                                        "created_at",
+                                        "Date unknown"
+                                    ) | replace("T", " ") }}
+                                </time>
                             </p>
                         </div>
 

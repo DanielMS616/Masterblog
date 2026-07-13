@@ -1,4 +1,5 @@
 import json
+from datetime import datetime
 
 from flask import Flask, redirect, render_template, request, url_for
 
@@ -49,6 +50,14 @@ def save_blog_posts(blog_posts):
         json.dump(blog_posts, file, indent=4)
 
 
+def get_current_timestamp():
+    """Return the current local date and time in ISO format."""
+
+    # isoformat() creates a structured timestamp.
+    # timespec="minutes" removes seconds and microseconds.
+    return datetime.now().isoformat(timespec="minutes")
+
+
 def get_next_id(blog_posts):
     """Return the next available ID for a new blog post."""
 
@@ -81,6 +90,13 @@ def index():
 
     # Load the latest posts whenever the home page is requested.
     blog_posts = load_blog_posts()
+
+    # Display newer posts before older posts.
+    # Posts without a creation date receive an empty string and appear last.
+    blog_posts.sort(
+        key=lambda post: post.get("created_at", ""),
+        reverse=True
+    )
 
     # Read the optional filters from the URL query string.
     search_query = request.args.get("search", "").strip()
@@ -187,7 +203,8 @@ def add():
             "title": title,
             "content": content,
             "category": category,
-            "likes": DEFAULT_LIKES
+            "likes": DEFAULT_LIKES,
+            "created_at": get_current_timestamp()
         }
 
         blog_posts.append(new_post)

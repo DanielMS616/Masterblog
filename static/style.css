@@ -313,3 +313,9 @@ textarea:focus {
 .post-preview {
     overflow-wrap: anywhere;
 }
+
+.post-date {
+    color: #999;
+    font-style: normal;
+    white-space: nowrap;
+}
