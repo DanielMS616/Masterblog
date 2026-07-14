@@ -1,54 +1,38 @@
 <p align="center">
     <img
-        src="docs/images/masterblog-banner.webp"
-        alt="Masterblog community blog banner"
+        src="docs/images/masterblog-hero.webp"
+        alt="Masterblog project overview with neon community design"
         width="100%"
     >
 </p>
 
-<h1 align="center">Masterblog</h1>
-
 <p align="center">
-    A vibrant Flask community blog for sharing ideas,
-    projects, and learning experiences.
+    A Flask community blog for sharing ideas, projects,
+    and learning experiences.
 </p>
-
-<p align="center">
-    <strong>Flask</strong> ·
-    <strong>Jinja</strong> ·
-    <strong>JSON</strong> ·
-    <strong>HTML</strong> ·
-    <strong>CSS</strong>
-</p>
-
-<p align="center">
-    Search posts · Filter categories · Like stories ·
-    Edit content · Explore author avatars
-</p>
-
-## Preview
-
-![Masterblog overview](docs/images/masterblog-overview.webp)
 
 ## About the Project
 
-Masterblog is a lightweight community blog built with Flask.
+**Masterblog** is a lightweight community blog built with Flask.
 
 Users can create, edit, delete, search, filter, and like blog posts.
-Each author is automatically assigned a locally stored neon anime avatar,
-giving the application a colorful community identity without requiring
-user accounts or external image services.
+Every post has its own detail page, category, creation timestamp, and
+automatically assigned author avatar.
 
-Blog posts are stored persistently in a JSON file.
+The application stores its data persistently in a local JSON file and
+uses locally stored avatar images without relying on external image
+services.
 
 ## Features
 
 - Create, update, and delete blog posts
-- Search posts by title, author, content, or category
+- Search by title, author, content, or category
 - Filter posts by category
 - Persistent like counters
 - Individual detail pages for every post
-- Automatic local author avatars with initials as fallback
+- Automatic local author avatars
+- Stable avatar assignment based on the author name
+- Initials as a fallback when an avatar cannot be loaded
 - Creation timestamps
 - Responsive dark neon community design
 
@@ -60,16 +44,28 @@ Each author name is normalized and converted into a stable SHA-256 hash.
 The resulting value determines which of the eight locally stored avatars
 is displayed.
 
-The same author name therefore always receives the same avatar.
-If an image cannot be loaded, the author's initials are displayed as
-a fallback.
+This means that the same author name always receives the same character,
+even after restarting the application.
+
+If an avatar image cannot be loaded, the author's initials remain visible
+as a fallback.
 
 ## Post Detail View
 
-The detail page presents the complete article together with its author,
-creation date, category, like counter, and management actions.
+Each post has an individual detail page containing its complete content,
+author information, category, creation time, like counter, and management
+actions.
 
 ![Masterblog post detail view](docs/images/masterblog-detail.webp)
+
+## Tech Stack
+
+- **Python** — application logic and data processing
+- **Flask** — routing and web application framework
+- **Jinja** — dynamic HTML templates
+- **JSON** — persistent local post storage
+- **HTML** — page structure
+- **CSS** — responsive dark neon interface
 
 ## Installation
 
@@ -80,11 +76,22 @@ git clone https://github.com/DanielMS616/Masterblog.git
 cd Masterblog
 ```
 
-Create and activate a virtual environment:
+Create a virtual environment:
 
 ```bash
 python3 -m venv .venv
+```
+
+Activate it on macOS or Linux:
+
+```bash
 source .venv/bin/activate
+```
+
+Activate it on Windows:
+
+```powershell
+.venv\Scripts\activate
 ```
 
 Install the dependencies:
@@ -93,13 +100,13 @@ Install the dependencies:
 pip install -r requirements.txt
 ```
 
-Start the application:
+Start the Flask application:
 
 ```bash
 python3 app.py
 ```
 
-Open the blog in your browser:
+Open the application in your browser:
 
 ```text
 http://localhost:4999
@@ -107,15 +114,17 @@ http://localhost:4999
 
 ## Usage
 
-From the home page, you can:
+From the home page, users can:
 
-1. Create a new post with an author, title, category, and content.
-2. Search existing posts by title, author, content, or category.
+1. Create a post with an author, title, category, and content.
+2. Search posts by title, author, content, or category.
 3. Filter the community feed by category.
-4. Open a post's detail page with **Read More**.
-5. Like, edit, or delete individual posts.
+4. Open the complete article with **Read More**.
+5. Like an individual post.
+6. Edit or delete existing posts.
 
-All changes are saved to `blog_posts.json`.
+All changes are written to `blog_posts.json` and remain available after
+restarting the application.
 
 ## Project Structure
 
@@ -128,9 +137,8 @@ Masterblog/
 ├── docs/
 │   └── images/
 │       ├── avatar-showcase.webp
-│       ├── masterblog-banner.webp
 │       ├── masterblog-detail.webp
-│       └── masterblog-overview.webp
+│       └── masterblog-hero.webp
 ├── static/
 │   ├── style.css
 │   └── avatars/
@@ -153,48 +161,48 @@ Masterblog/
 
 ### JSON Persistence
 
-Posts are loaded from and saved to a local JSON file. Changes remain
-available after restarting the Flask application.
+The application loads posts from `blog_posts.json` and saves the complete
+updated list after creating, editing, deleting, or liking a post.
 
 ### Dynamic Routes
 
-Flask routes use post IDs to open, update, like, or delete individual
-posts.
+Flask uses dynamic post IDs for detail pages and post-specific actions:
+
+```text
+/post/<post_id>
+/update/<post_id>
+/delete/<post_id>
+/like/<post_id>
+```
 
 ### Stable Avatar Assignment
 
-SHA-256 hashing converts each normalized author name into a stable avatar
-index. The avatar calculation remains consistent between application
-restarts.
-
-### Initials Fallback
-
-Author initials remain behind the avatar image. If the image file cannot
-be loaded, the initials are displayed automatically.
+The normalized author name is converted into a SHA-256 hash. Part of that
+hash is used to calculate a stable index for the local avatar list.
 
 ### Jinja Templates
 
 Jinja loops, conditions, filters, slicing, and fallback values are used
-to render posts safely and dynamically.
+to render the stored data dynamically.
 
-### Responsive Design
+### Responsive Interface
 
-The interface adapts to desktop and mobile layouts using CSS Grid,
-Flexbox, media queries, reusable design variables, and accessible focus
-states.
+CSS Grid, Flexbox, media queries, reusable variables, hover effects, and
+accessible focus states create a responsive interface for desktop and
+mobile screens.
 
 ## Future Improvements
 
 - User accounts and authentication
+- Author profiles and manual avatar selection
 - Comments and threaded discussions
-- Custom avatar selection
 - Database storage with SQLAlchemy
 - Form validation and flash messages
 - Automated Flask tests
-- Asynchronous likes without page reload
-- Safer POST-based deletion with confirmation
+- Likes without reloading the page
+- POST-based deletion with confirmation
+- Pagination for larger communities
 
 ## Author
 
-Created by **Daniel Müller** as part of the Masterschool Software
-Engineering program.
+Created as part of the Masterschool Software Engineering program.
