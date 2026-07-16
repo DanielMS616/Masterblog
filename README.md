@@ -1,4 +1,4 @@
-![Masterblog project overview](docs/images/masterblog-hero.png)
+![Masterblog project overview](./docs/images/masterblog-hero.png)
 
 A Flask community blog for sharing ideas, projects, and learning experiences.
 
@@ -29,7 +29,7 @@ services.
 
 ## Automatic Author Avatars
 
-![Masterblog avatar collection](docs/images/avatar-showcase.png)
+![Masterblog avatar collection](./docs/images/avatar-showcase.png)
 
 Each author name is normalized and converted into a stable SHA-256 hash.
 The resulting value determines which of the eight locally stored avatars
@@ -47,7 +47,7 @@ Each post has an individual detail page containing its complete content,
 author information, category, creation time, like counter, and management
 actions.
 
-![Masterblog post detail view](docs/images/masterblog-detail.png)
+![Masterblog post detail view](./docs/images/masterblog-detail.png)
 
 ## Tech Stack
 
