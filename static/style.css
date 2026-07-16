@@ -5,13 +5,12 @@
    ========================================================= */
 
 :root {
+    color-scheme: dark;
+
     --background: #080B16;
-    --background-light: #10152A;
 
     --surface: rgba(22, 28, 51, 0.88);
     --surface-solid: #161C33;
-    --surface-light: #202946;
-    --surface-hover: #283252;
 
     --border: rgba(255, 255, 255, 0.09);
     --border-hover: rgba(139, 92, 246, 0.55);
@@ -23,10 +22,6 @@
     --purple: #8B5CF6;
     --purple-light: #A78BFA;
     --pink: #EC4899;
-    --cyan: #22D3EE;
-    --green: #34D399;
-    --orange: #FB923C;
-    --red: #FB7185;
 
     --gradient-main: linear-gradient(
         135deg,
@@ -34,11 +29,6 @@
         var(--pink)
     );
 
-    --gradient-secondary: linear-gradient(
-        135deg,
-        var(--cyan),
-        var(--purple)
-    );
 
     --shadow-soft: 0 18px 50px rgba(0, 0, 0, 0.28);
     --shadow-card: 0 12px 35px rgba(0, 0, 0, 0.22);
@@ -126,6 +116,8 @@ body::before {
         );
 
     background-size: 42px 42px;
+
+    pointer-events: none;
 }
 
 a,
@@ -185,6 +177,7 @@ a {
         var(--shadow-soft),
         var(--shadow-glow);
 
+    -webkit-backdrop-filter: blur(18px);
     backdrop-filter: blur(18px);
 }
 
@@ -419,6 +412,7 @@ h1 {
 
     box-shadow: var(--shadow-card);
 
+    -webkit-backdrop-filter: blur(16px);
     backdrop-filter: blur(16px);
 }
 
@@ -496,6 +490,11 @@ select {
     cursor: pointer;
 }
 
+select option {
+    color: var(--text);
+    background-color: var(--surface-solid);
+}
+
 textarea {
     min-height: 190px;
 
@@ -535,6 +534,7 @@ textarea {
 
     box-shadow: var(--shadow-card);
 
+    -webkit-backdrop-filter: blur(16px);
     backdrop-filter: blur(16px);
 
     transition:
@@ -598,20 +598,6 @@ Gradient line at the top of each post card.
     letter-spacing: -0.025em;
 }
 
-.post-author {
-    display: flex;
-    align-items: center;
-    flex-wrap: wrap;
-    gap: 4px;
-
-    margin: 10px 0 0;
-
-    color: var(--text-muted);
-
-    font-size: 0.9rem;
-    font-style: normal;
-}
-
 .post-date {
     color: #707C9E;
 
@@ -627,7 +613,7 @@ Gradient line at the top of each post card.
     font-size: 1rem;
     line-height: 1.75;
 
-    white-space: pre-wrap;
+    white-space: pre-line;
 }
 
 .post-preview {
@@ -701,6 +687,7 @@ Gradient line at the top of each post card.
         var(--shadow-soft),
         var(--shadow-glow);
 
+    -webkit-backdrop-filter: blur(16px);
     backdrop-filter: blur(16px);
 }
 
@@ -769,17 +756,16 @@ Gradient line at the top of each post card.
 
 .post-detail:hover {
     transform: none;
+
+    border-color: var(--border);
+
+    box-shadow: var(--shadow-card);
 }
 
-.post-detail h1 {
-    margin: 0;
-
-    color: var(--text);
-
-    font-size: clamp(2rem, 5vw, 3rem);
-    line-height: 1.12;
-    letter-spacing: -0.04em;
+.post-detail:hover::before {
+    opacity: 0;
 }
+
 
 .detail-content {
     min-height: 180px;
@@ -788,6 +774,8 @@ Gradient line at the top of each post card.
 
     font-size: 1.08rem;
     line-height: 1.9;
+
+    overflow-wrap: anywhere;
 }
 
 .like-summary {
@@ -862,9 +850,7 @@ Gradient line at the top of each post card.
     object-fit: cover;
     object-position: center;
 
-    transition:
-        transform var(--transition),
-        filter var(--transition);
+    transition: transform var(--transition);
 }
 
 .post:hover .author-avatar img {
@@ -924,6 +910,13 @@ Gradient line at the top of each post card.
 
 .post-title a:hover {
     color: var(--purple-light);
+}
+
+.post-title a:focus-visible {
+    border-radius: 4px;
+
+    outline: 3px solid rgba(34, 211, 238, 0.35);
+    outline-offset: 4px;
 }
 
 .post-card-layout .post-content {
@@ -1047,7 +1040,7 @@ Gradient line at the top of each post card.
         padding: 24px;
     }
 
-        .post-card-layout {
+    .post-card-layout {
         grid-template-columns: 58px minmax(0, 1fr);
         gap: 14px;
     }

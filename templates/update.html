@@ -82,7 +82,8 @@
                 </label>
 
                 <!--
-                Mark the post's current category as selected.
+                The current category is marked as selected.
+                Older posts without a category use Uncategorized.
                 -->
                 <select
                     id="category"
@@ -90,14 +91,21 @@
                     required
                 >
                     {% for category in categories %}
-                        <option
-                            value="{{ category }}"
-                            {% if category == post["category"] %}
+                        {% if category == post.get(
+                            "category",
+                            "Uncategorized"
+                        ) %}
+                            <option
+                                value="{{ category }}"
                                 selected
-                            {% endif %}
-                        >
-                            {{ category }}
-                        </option>
+                            >
+                                {{ category }}
+                            </option>
+                        {% else %}
+                            <option value="{{ category }}">
+                                {{ category }}
+                            </option>
+                        {% endif %}
                     {% endfor %}
                 </select>
             </div>
@@ -108,7 +116,7 @@
                 </label>
 
                 <!--
-                Textareas store their value between the opening
+                Text areas store their value between the opening
                 and closing tags, not inside a value attribute.
                 -->
                 <textarea

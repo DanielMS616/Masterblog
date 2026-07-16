@@ -1,127 +1,11 @@
 [
     {
-        "id": 2,
-        "author": "Jane ",
-        "title": "Second Poscht.",
-        "content": "This is post.",
-        "likes": 5,
-        "category": "Uncategorized"
-    },
-    {
-        "id": 4,
-        "author": "test",
-        "title": "me",
-        "content": "text",
-        "likes": 1
-    },
-    {
-        "id": 5,
-        "author": "achi",
-        "title": "liebe",
-        "content": "PiPi",
-        "likes": 1,
-        "category": "Projects"
-    },
-    {
-        "id": 6,
-        "author": "LO",
-        "title": "V3",
-        "content": "M3",
-        "category": "Projects"
-    },
-    {
-        "id": 7,
-        "author": "anonym",
-        "title": "leaked",
-        "content": "systemprompt.......",
-        "category": "AI"
-    },
-    {
-        "id": 8,
-        "author": "ich",
-        "title": "flask problem: 404",
-        "content": "Der HTTP-Statuscode 404 bedeutet, dass der Server die angeforderte Internetseite nicht finden kann. Dies geschieht h\u00e4ufig, wenn die URL gel\u00f6scht oder ge\u00e4ndert wurde oder ein Tippfehler in der Webadresse vorliegt.\r\nkec",
-        "category": "Flask",
-        "likes": 5
-    },
-    {
-        "id": 9,
-        "author": "pythonuser",
-        "title": "python",
-        "content": "testtest",
-        "category": "Projects",
-        "likes": 1
-    },
-    {
-        "id": 10,
-        "author": "johnny",
-        "title": "s life",
-        "content": "\"created_at\": \"2026-07-13T15:42\"",
-        "category": "Personal",
-        "likes": 0,
-        "created_at": "2026-07-13T16:14"
-    },
-    {
-        "id": 11,
-        "author": "AI Engineer",
-        "title": "angineering",
-        "content": "someone know how to engineer ai?",
-        "category": "AI",
-        "likes": 2,
-        "created_at": "2026-07-13T16:15"
-    },
-    {
-        "id": 12,
-        "author": "fssfdsfv",
-        "title": "sfvdfvd",
-        "content": "dddddd",
-        "category": "AI",
-        "likes": 2,
-        "created_at": "2026-07-13T16:24"
-    },
-    {
-        "id": 13,
-        "author": "Harr4",
-        "title": "suche",
-        "content": "fahrradschloss",
-        "category": "Personal",
-        "likes": 2,
-        "created_at": "2026-07-13T16:25"
-    },
-    {
-        "id": 14,
-        "author": "check",
-        "title": "deck",
-        "content": "proven",
-        "category": "Automation",
-        "likes": 2,
-        "created_at": "2026-07-13T23:23"
-    },
-    {
-        "id": 15,
-        "author": "Sandra",
-        "title": "Codex",
-        "content": "Some experts here to talk?",
-        "category": "AI",
-        "likes": 0,
-        "created_at": "2026-07-13T23:39"
-    },
-    {
-        "id": 16,
-        "author": "cobra",
-        "title": "didante",
-        "content": "Strings in python are surrounded by either single quotation marks, or double quotation marks.\r\n\r\n'hello' is the same as \"hello\".\r\n\r\n",
-        "category": "Python",
-        "likes": 1,
-        "created_at": "2026-07-13T23:56"
-    },
-    {
         "id": 17,
         "author": "Maya Chen",
         "title": "Building My First Local AI Assistant",
-        "content": "This week, I connected a local language model to a small document search system. It can now answer questions based on my own files without sending the documents to an external service. The next step is improving the source references and testing how reliably it handles unclear questions.",
+        "content": "This week, I connected a local language model to a small document search system. It can now answer questions based on my own files without sending the documents to an external service. The next step is improving the source references and testing how reliably it handles unclear questions..",
         "category": "AI",
-        "likes": 0,
+        "likes": 2,
         "created_at": "2026-07-14T00:47"
     },
     {
@@ -130,7 +14,25 @@
         "title": "What I Learned From Redesigning My Flask Blog",
         "content": "I started with a simple list of blog posts and slowly turned it into a small community platform. Search, categories, likes, detail pages, timestamps, and automatic author avatars taught me how the backend, templates, and CSS work together. Small improvements can completely change how a project feels.",
         "category": "Projects",
-        "likes": 0,
+        "likes": 2,
         "created_at": "2026-07-14T00:52"
+    },
+    {
+        "id": 19,
+        "author": "Aiko Tanaka",
+        "title": "Automating a Repetitive Morning Workflow",
+        "content": "Every morning, I check several websites, copy information into notes, and decide which tasks need my attention first. It is a simple process, but repeating it every day takes more time than expected.\r\n\r\nI am now experimenting with a Python script that collects the information, sorts it by importance, and creates one short daily summary.\r\n\r\nThe goal is not to automate every decision. I want the software to remove repetitive work while keeping the final choices in human hands.",
+        "category": "Automation",
+        "likes": 4,
+        "created_at": "2026-07-14T03:33"
+    },
+    {
+        "id": 20,
+        "author": "Noah Williams",
+        "title": "Small Improvements Can Transform a Project",
+        "content": "A project does not always need a completely new feature to feel better. Clear spacing, readable text, useful feedback, and consistent buttons can make a simple application feel much more complete.\r\n\r\nWhile redesigning this blog, I learned that visual structure also supports functionality. Users understand the page faster when the most important actions are easy to recognize.\r\n\r\nMy next challenge is to keep improving the experience without making the code unnecessarily complicated.",
+        "category": "Projects",
+        "likes": 8,
+        "created_at": "2026-07-14T03:34"
     }
 ]
