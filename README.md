@@ -1,15 +1,6 @@
-<p align="center">
-    <img
-        src="docs/images/masterblog-hero.webp"
-        alt="Masterblog project overview with neon community design"
-        width="100%"
-    >
-</p>
+![Masterblog project overview](docs/images/masterblog-hero.png)
 
-<p align="center">
-    A Flask community blog for sharing ideas, projects,
-    and learning experiences.
-</p>
+A Flask community blog for sharing ideas, projects, and learning experiences.
 
 ## About the Project
 
@@ -38,7 +29,7 @@ services.
 
 ## Automatic Author Avatars
 
-![Masterblog avatar collection](docs/images/avatar-showcase.webp)
+![Masterblog avatar collection](docs/images/avatar-showcase.png)
 
 Each author name is normalized and converted into a stable SHA-256 hash.
 The resulting value determines which of the eight locally stored avatars
@@ -56,7 +47,7 @@ Each post has an individual detail page containing its complete content,
 author information, category, creation time, like counter, and management
 actions.
 
-![Masterblog post detail view](docs/images/masterblog-detail.webp)
+![Masterblog post detail view](docs/images/masterblog-detail.png)
 
 ## Tech Stack
 
@@ -136,9 +127,9 @@ Masterblog/
 ├── README.md
 ├── docs/
 │   └── images/
-│       ├── avatar-showcase.webp
-│       ├── masterblog-detail.webp
-│       └── masterblog-hero.webp
+│       ├── avatar-showcase.png
+│       ├── masterblog-detail.png
+│       └── masterblog-hero.png
 ├── static/
 │   ├── style.css
 │   └── avatars/
